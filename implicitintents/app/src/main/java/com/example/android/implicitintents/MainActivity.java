@@ -18,6 +18,8 @@ package com.example.android.implicitintents;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.app.ShareCompat.IntentBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -48,17 +50,14 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void onClickOpenAddressButton(View v) {
-        // COMPLETED (5) Store an address in a String
         String addressString = "1600 Amphitheatre Parkway, CA";
 
-        // COMPLETED (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
         Uri.Builder builder = new Uri.Builder();
         builder.scheme("geo")
                 .path("0,0")
                 .query(addressString);
         Uri addressUri = builder.build();
 
-        // COMPLETED (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
         showMap(addressUri);
     }
 
@@ -69,7 +68,15 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void onClickShareTextButton(View v) {
-        Toast.makeText(this, "TODO: Share text when this is clicked", Toast.LENGTH_LONG).show();
+        // COMPLETED (5) Specify a String you'd like to share
+        /* Create the String that you want to share */
+        String textThatYouWantToShare =
+                "Sharing the coolest thing I've learned so far. You should " +
+                        "check out Udacity and Google's Android Nanodegree!";
+
+        // COMPLETED (6) Replace the Toast with shareText, passing in the String from step 5
+        /* Send that text to our method that will share it. */
+        shareText(textThatYouWantToShare);
     }
 
     /**
@@ -117,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // COMPLETED (1) Create a method called showMap with a Uri as the single parameter
     /**
      * This method will fire off an implicit Intent to view a location on a map.
      *
@@ -128,24 +134,57 @@ public class MainActivity extends AppCompatActivity {
      * @param geoLocation The Uri representing the location that will be opened in the map
      */
     private void showMap(Uri geoLocation) {
-        // COMPLETED (2) Create an Intent with action type, Intent.ACTION_VIEW
         /*
          * Again, we create an Intent with the action, ACTION_VIEW because we want to VIEW the
          * contents of this Uri.
          */
         Intent intent = new Intent(Intent.ACTION_VIEW);
 
-        // COMPLETED (3) Set the data of the Intent to the Uri passed into this method
         /*
          * Using setData to set the Uri of this Intent has the exact same affect as passing it in
          * the Intent's constructor. This is simply an alternate way of doing this.
          */
         intent.setData(geoLocation);
-
-
-        // COMPLETED (4) Verify that this Intent can be launched and then call startActivity
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    // COMPLETED (1) Create a void method called shareText that accepts a String as a parameter
+    /**
+     * This method shares text and allows the user to select which app they would like to use to
+     * share the text. Using ShareCompat's IntentBuilder, we get some really cool functionality for
+     * free. The chooser that is started using the {@link IntentBuilder#startChooser()} method will
+     * create a chooser when more than one app on the device can handle the Intent. This happens
+     * when the user has, for example, both a texting app and an email app. If only one Activity
+     * on the phone can handle the Intent, it will automatically be launched.
+     *
+     * @param textToShare Text that will be shared
+     */
+    private void shareText(String textToShare) {
+        // COMPLETED (2) Create a String variable called mimeType and set it to "text/plain"
+        /*
+         * You can think of MIME types similarly to file extensions. They aren't the exact same,
+         * but MIME types help a computer determine which applications can open which content. For
+         * example, if you double click on a .pdf file, you will be presented with a list of
+         * programs that can open PDFs. Specifying the MIME type as text/plain has a similar affect
+         * on our implicit Intent. With text/plain specified, all apps that can handle text content
+         * in some way will be offered when we call startActivity on this particular Intent.
+         */
+        String mimeType = "text/plain";
+
+        // COMPLETED (3) Create a title for the chooser window that will pop up
+        /* This is just the title of the window that will pop up when we call startActivity */
+        String title = "Learning How to Share";
+
+        // COMPLETED (4) Use ShareCompat.IntentBuilder to build the Intent and start the chooser
+        /* ShareCompat.IntentBuilder provides a fluent API for creating Intents */
+        ShareCompat.IntentBuilder
+                /* The from method specifies the Context from which this share is coming from */
+                .from(this)
+                .setType(mimeType)
+                .setChooserTitle(title)
+                .setText(textToShare)
+                .startChooser();
     }
 }
