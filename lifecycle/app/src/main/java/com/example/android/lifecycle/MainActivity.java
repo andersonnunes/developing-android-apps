@@ -15,6 +15,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    // COMPLETED (1) Create a key String called LIFECYCLE_CALLBACKS_TEXT_KEY
+    /*
+     * This constant String will be used to store the content of the TextView used to display the
+     * list of callbacks. The reason we are storing the contents of the TextView is so that you can
+     * see the entire set of callbacks as they are called.
+     */
+    private static final String LIFECYCLE_CALLBACKS_TEXT_KEY = "callbacks";
+
     /* Constant values for the names of each respective lifecycle callback */
     private static final String ON_CREATE = "onCreate";
     private static final String ON_START = "onStart";
@@ -47,11 +55,25 @@ public class MainActivity extends AppCompatActivity {
 
         mLifecycleDisplay = (TextView) findViewById(R.id.tv_lifecycle_events_display);
 
-        // COMPLETED (1) Use logAndAppend within onCreate
+        // COMPLETED (6) If savedInstanceState is not null and contains LIFECYCLE_CALLBACKS_TEXT_KEY, set that text on our TextView
+        /*
+         * If savedInstanceState is not null, that means our Activity is not being started for the
+         * first time. Even if the savedInstanceState is not null, it is smart to check if the
+         * bundle contains the key we are looking for. In our case, the key we are looking for maps
+         * to the contents of the TextView that displays our list of callbacks. If the bundle
+         * contains that key, we set the contents of the TextView accordingly.
+         */
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(LIFECYCLE_CALLBACKS_TEXT_KEY)) {
+                String allPreviousLifecycleCallbacks = savedInstanceState
+                        .getString(LIFECYCLE_CALLBACKS_TEXT_KEY);
+                mLifecycleDisplay.setText(allPreviousLifecycleCallbacks);
+            }
+        }
+
         logAndAppend(ON_CREATE);
     }
 
-    // COMPLETED (2) Override onStart, call super.onStart, and call logAndAppend with ON_START
     /**
      * Called when the activity is becoming visible to the user.
      *
@@ -65,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         logAndAppend(ON_START);
     }
 
-    // COMPLETED (3) Override onResume, call super.onResume, and call logAndAppend with ON_RESUME
     /**
      * Called when the activity will start interacting with the user. At this point your activity
      * is at the top of the activity stack, with user input going to it.
@@ -79,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         logAndAppend(ON_RESUME);
     }
 
-    // COMPLETED (4) Override onPause, call super.onPause, and call logAndAppend with ON_PAUSE
     /**
      * Called when the system is about to start resuming a previous activity. This is typically
      * used to commit unsaved changes to persistent data, stop animations and other things that may
@@ -96,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         logAndAppend(ON_PAUSE);
     }
 
-    // COMPLETED (5) Override onStop, call super.onStop, and call logAndAppend with ON_STOP
     /**
      * Called when the activity is no longer visible to the user, because another activity has been
      * resumed and is covering this one. This may happen either because a new activity is being
@@ -113,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         logAndAppend(ON_STOP);
     }
 
-    // COMPLETED (6) Override onRestart, call super.onRestart, and call logAndAppend with ON_RESTART
     /**
      * Called after your activity has been stopped, prior to it being started again.
      *
@@ -125,8 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
         logAndAppend(ON_RESTART);
     }
-
-    // COMPLETED (7) Override onDestroy, call super.onDestroy, and call logAndAppend with ON_DESTROY
+    
     /**
      * The final call you receive before your activity is destroyed. This can happen either because
      * the activity is finishing (someone called finish() on it, or because the system is
@@ -138,6 +155,18 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
 
         logAndAppend(ON_DESTROY);
+    }
+
+    // COMPLETED (2) Override onSaveInstanceState
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // COMPLETED (3) Call super.onSaveInstanceState
+        super.onSaveInstanceState(outState);
+        // COMPLETED (4) Call logAndAppend with the ON_SAVE_INSTANCE_STATE String
+        logAndAppend(ON_SAVE_INSTANCE_STATE);
+        // COMPLETED (5) Put the text from the TextView in the outState bundle
+        String lifecycleDisplayTextViewContents = mLifecycleDisplay.getText().toString();
+        outState.putString(LIFECYCLE_CALLBACKS_TEXT_KEY, lifecycleDisplayTextViewContents);
     }
 
     /**
