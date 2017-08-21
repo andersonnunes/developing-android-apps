@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.datafrominternet;
+package com.example.android.asynctaskloader;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,23 +25,28 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.datafrominternet.utilities.NetworkUtils;
+import com.example.android.asynctaskloader.utilities.NetworkUtils;
 
 import java.io.IOException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    // COMPLETED (1) Create a static final key to store the query's URL
+    /* A constant to save and restore the URL that is being displayed */
+    private static final String SEARCH_QUERY_URL_EXTRA = "query";
+
+    // COMPLETED (2) Create a static final key to store the search's raw JSON
+    /* A constant to save and restore the JSON that is being displayed */
+    private static final String SEARCH_RESULTS_RAW_JSON = "results";
+
     private EditText mSearchBoxEditText;
 
     private TextView mUrlDisplayTextView;
-
     private TextView mSearchResultsTextView;
 
-    // COMPLETED (12) Create a variable to store a reference to the error message TextView
     private TextView mErrorMessageDisplay;
 
-    // COMPLETED (24) Create a ProgressBar variable to store a reference to the ProgressBar
     private ProgressBar mLoadingIndicator;
 
     @Override
@@ -54,11 +59,18 @@ public class MainActivity extends AppCompatActivity {
         mUrlDisplayTextView = (TextView) findViewById(R.id.tv_url_display);
         mSearchResultsTextView = (TextView) findViewById(R.id.tv_github_search_results_json);
 
-        // COMPLETED (13) Get a reference to the error TextView using findViewById
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        // COMPLETED (25) Get a reference to the ProgressBar using findViewById
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+
+        // COMPLETED (9) If the savedInstanceState bundle is not null, set the text of the URL and search results TextView respectively
+        if (savedInstanceState != null) {
+            String queryUrl = savedInstanceState.getString(SEARCH_QUERY_URL_EXTRA);
+            String rawJsonSearchResults = savedInstanceState.getString(SEARCH_RESULTS_RAW_JSON);
+
+            mUrlDisplayTextView.setText(queryUrl);
+            mSearchResultsTextView.setText(rawJsonSearchResults);
+        }
     }
 
     /**
@@ -74,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         new GithubQueryTask().execute(githubSearchUrl);
     }
 
-    // COMPLETED (14) Create a method called showJsonDataView to show the data and hide the error
     /**
      * This method will make the View for the JSON data visible and
      * hide the error message.
@@ -83,13 +94,12 @@ public class MainActivity extends AppCompatActivity {
      * need to check whether each view is currently visible or invisible.
      */
     private void showJsonDataView() {
-        // First, make sure the error is invisible
+        /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        // Then, make sure the JSON data is visible
+        /* Then, make sure the JSON data is visible */
         mSearchResultsTextView.setVisibility(View.VISIBLE);
     }
 
-    // COMPLETED (15) Create a method called showErrorMessage to show the error and hide the data
     /**
      * This method will make the error message visible and hide the JSON
      * View.
@@ -98,15 +108,14 @@ public class MainActivity extends AppCompatActivity {
      * need to check whether each view is currently visible or invisible.
      */
     private void showErrorMessage() {
-        // First, hide the currently visible data
+        /* First, hide the currently visible data */
         mSearchResultsTextView.setVisibility(View.INVISIBLE);
-        // Then, show the error
+        /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
     public class GithubQueryTask extends AsyncTask<URL, Void, String> {
 
-        // COMPLETED (26) Override onPreExecute to set the loading indicator to visible
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -127,14 +136,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String githubSearchResults) {
-            // COMPLETED (27) As soon as the loading is complete, hide the loading indicator
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (githubSearchResults != null && !githubSearchResults.equals("")) {
-                // COMPLETED (17) Call showJsonDataView if we have valid, non-null results
                 showJsonDataView();
                 mSearchResultsTextView.setText(githubSearchResults);
             } else {
-                // COMPLETED (16) Call showErrorMessage if the result is null in onPostExecute
                 showErrorMessage();
             }
         }
@@ -154,5 +160,24 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // COMPLETED (3) Override onSaveInstanceState to persist data across Activity recreation
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // COMPLETED (4) Make sure super.onSaveInstanceState is called before doing anything else
+        super.onSaveInstanceState(outState);
+
+        // COMPLETED (5) Put the contents of the TextView that contains our URL into a variable
+        String queryUrl = mUrlDisplayTextView.getText().toString();
+
+        // COMPLETED (6) Using the key for the query URL, put the string in the outState Bundle
+        outState.putString(SEARCH_QUERY_URL_EXTRA, queryUrl);
+
+        // COMPLETED (7) Put the contents of the TextView that contains our raw JSON search results into a variable
+        String rawJsonSearchResults = mSearchResultsTextView.getText().toString();
+
+        // COMPLETED (8) Using the key for the raw JSON search results, put the search results into the outState Bundle
+        outState.putString(SEARCH_RESULTS_RAW_JSON, rawJsonSearchResults);
     }
 }
