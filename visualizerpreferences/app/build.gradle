@@ -20,4 +20,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:26.0.1'
+    // COMPLETED (1) Add the gradle dependency for the support preference fragment
+    compile 'com.android.support:preference-v7:26.0.1'
 }
