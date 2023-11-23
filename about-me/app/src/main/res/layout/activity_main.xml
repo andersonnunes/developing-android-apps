@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- TODO (02) Use a <layout> tag to surround the LinerLayout. -->
+
+<!-- TODO (07) Add a data block for with a variable myName for the MyName class.  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -6,6 +11,8 @@
     android:layout_height="match_parent"
     android:paddingStart="@dimen/padding"
     android:paddingEnd="@dimen/padding">
+
+    <!-- TODO (08) Replace references to name and nickname string resources with references to the variable. -->
 
     <TextView
         android:id="@+id/name_text"
