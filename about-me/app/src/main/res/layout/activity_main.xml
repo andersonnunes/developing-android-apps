@@ -21,4 +21,8 @@
         android:contentDescription="@string/yellow_star"
         app:srcCompat="@android:drawable/btn_star_big_on" />
 
+    <!-- TODO (01) Add a ScrollView -->
+
+    <!-- TODO (02) Create a TextView with your bio inside the ScrollView -->
+
 </LinearLayout>
