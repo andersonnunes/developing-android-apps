@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.example.android.navigation.databinding.FragmentGameWonBinding
 
 
@@ -15,8 +16,9 @@ class GameWonFragment : Fragment() {
         // Inflate the layout for this fragment
         val binding: FragmentGameWonBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_game_won, container, false)
-        // TODO (06) Add an onClick Handler for the nextMatch button that navigates to the gameFragment
-        // using action_gameWonFragment_to_gameFragment
+        binding.nextMatchButton.setOnClickListener { view: View ->
+            view.findNavController().navigate(R.id.action_gameWonFragment_to_gameFragment)
+        }
         return binding.root
     }
 }
