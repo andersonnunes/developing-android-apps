@@ -25,12 +25,8 @@ class TitleFragment : Fragment() {
             inflater, R.layout.fragment_title, container, false
         )
         binding.playButton.setOnClickListener(
-            // TODO (11) Replace action ID with actionTitleFragmentToGameFragment
-            // From TitleFragmentDirections
-            // We will have to switch this to using an anonymous function, since
-            // createNavigateOnClickListener cannot take NavDirections
             Navigation.createNavigateOnClickListener(
-                R.id.action_titleFragment_to_gameFragment
+                TitleFragmentDirections.actionTitleFragmentToGameFragment()
             )
         )
 
