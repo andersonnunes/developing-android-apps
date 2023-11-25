@@ -2,12 +2,20 @@ package com.example.android.navigation
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.android.navigation.databinding.FragmentTitleBinding
 
 class TitleFragment : Fragment() {
@@ -21,20 +29,20 @@ class TitleFragment : Fragment() {
                 R.id.action_titleFragment_to_gameFragment
             )
         )
-        // TODO (02) Create the new menu resource
-        // Right click on the res folder within the Android project and select New Resource File
-        // Name it overflow_menu with resource type menu.  Add an About menu item with the ID of
-        // the aboutFragment.
-        // TODO (03) Call setHasOptionsMenu(true)
-        // This tells Android that our fragment has an Options Menu, so it will call
-        // onCreateOptionsMenu
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.overflow_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return  NavigationUI.onNavDestinationSelected(menuItem,
+                    requireView().findNavController())
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         return binding.root
     }
-
-    // TODO (04) Override onCreateOptionsMenu
-    // Use the passed-in MenuInflater to inflate the overflow_menu
-
-    // TODO (05) Override onOptionsItemSelected
-    // Return true if NavigationUI.onNavDestinationSelected returns true, else return
-    // super.onOptionsItemSelected.
 }
