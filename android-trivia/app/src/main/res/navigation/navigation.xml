@@ -48,4 +48,6 @@
             android:id="@+id/action_gameOverFragment_to_gameFragment"
             app:destination="@id/gameFragment" />
     </fragment>
+    <!-- TODO (01) Add the AboutFragment to the Navigation Graph
+         Go to the navigation editor and click the add button.  Add fragment_about. -->
 </navigation>
