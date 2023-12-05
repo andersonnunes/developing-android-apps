@@ -1,6 +1,10 @@
 package com.example.android.dessertpusher
 
 import android.os.Handler
+import android.os.Looper
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import timber.log.Timber
 
 /**
@@ -18,24 +22,31 @@ import timber.log.Timber
  * https://developer.android.com/guide/components/processes-and-threads
  *
  */
-
-// TODO (01) Make DessertTimer a LifecycleObserver by implementing LifecycleObserver
-// TODO (02) Have DessertTimer take in a Lifecycle as a parameter and set up the
-// observer relationship in an init block
-class DessertTimer {
+class DessertTimer(lifecycle: Lifecycle) : LifecycleEventObserver {
 
     // The number of seconds counted since the timer started
-    var secondsCount = 0
+    private var secondsCount = 0
 
     /**
      * [Handler] is a class meant to process a queue of messages (known as [android.os.Message]s)
      * or actions (known as [Runnable]s)
      */
-    private var handler = Handler()
+    private var handler = Handler(Looper.myLooper()!!)
     private lateinit var runnable: Runnable
 
+    init {
+        // Add this as a lifecycle Observer, which allows for the class to react to changes in this
+        // activity's lifecycle state
+        lifecycle.addObserver(this)
+    }
 
-    // TODO (03) Annotate startTimer and stopTimer with @OnLifecycleEvent and the correct event
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        if (event == Lifecycle.Event.ON_START)
+            startTimer()
+        else if(event == Lifecycle.Event.ON_STOP)
+            stopTimer()
+    }
+
     fun startTimer() {
         // Create the runnable action, which prints out a log and increments the seconds counter
         runnable = Runnable {
