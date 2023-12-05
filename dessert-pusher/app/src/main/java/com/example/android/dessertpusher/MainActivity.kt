@@ -62,6 +62,10 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         // Setup dessertTimer
         dessertTimer = DessertTimer(this.lifecycle)
 
+        // TODO (03) Check here if the Bundle savedInstanceState is null. If it isn't, get the
+        // three values you saved and restore them: revenue, desserts sold and the timer's
+        // seconds count. Also make sure to show the correct image resource.
+
         // Set the TextViews to the right values
         binding.revenue = revenue
         binding.amountSold = dessertsSold
@@ -137,6 +141,10 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         }
         return super.onOptionsItemSelected(item)
     }
+
+    // TODO (01) Add lifecycle callback methods for onSaveInstanceState and onRestoreInstanceState
+    // TODO (02) In onSaveInstanceState, put the revenue, dessertsSold and
+    // dessertTimer.secondsCount in the state Bundle
 
     /** Lifecycle Methods **/
     override fun onStart() {
